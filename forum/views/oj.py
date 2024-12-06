@@ -143,9 +143,9 @@ class PostNewAPI(APIView):
             return fail("未登录！")
         post_id = request.POST.get("id")
         user_id = request.user.id
-        post_content = request.POST.get("post_content")
-        post_title = request.POST.get("post_title", None)
-        tags = request.POST.get("tags", None)
+        post_content = request.data.get("post_content")
+        post_title = request.data.get("post_title", None)
+        tags = request.data.get("tags", None)
 
         user = User.objects.get(id=user_id)
 
