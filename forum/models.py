@@ -15,6 +15,7 @@ class Post(models.Model):
     is_announcement = models.BooleanField(default=False)
     check_status = models.BooleanField(default=False)
     tags = models.ManyToManyField(Tag)
+    #nothing
 
     class Meta:
         db_table = 'post'
