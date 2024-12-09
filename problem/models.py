@@ -6,16 +6,9 @@ from django.db.models import Count
 from account.models import User
 
 
-class TagType(models.Model):
-    name = models.CharField(max_length=10)
-
-    class Meta:
-        db_table = 'tag_type'
-
-
 class Tag(models.Model):
     name = models.CharField(max_length=10)
-    type = models.ForeignKey(TagType, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'tag'
@@ -32,8 +25,8 @@ class Problem(models.Model):
     input_style = models.TextField()
     # 输出格式
     output_style = models.TextField()
-    # 提示
-    hint = models.TextField(null=True)
+    # 数据范围
+    data_range = models.TextField(null=True)
     """
     样例
     格式：{
@@ -148,10 +141,10 @@ class ProblemList(models.Model):
 
 class Solution(models.Model):
     content = models.TextField()
+    title = models.TextField()
     like_count = models.IntegerField(default=0)
     comment_count = models.IntegerField(default=0)
     create_time = models.DateTimeField(auto_now_add=True)
-    last_update_time = models.DateTimeField(null=True)
     tags = models.ManyToManyField(Tag)
     check_status = models.BooleanField(default=False)
     create_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='create_solutions')

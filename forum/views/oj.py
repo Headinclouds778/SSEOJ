@@ -5,15 +5,19 @@ from django.db.models import Q
 from forum.models import Post, PostComment
 from utils.api import *
 from account.models import User
+from problem.models import Tag
 
 class PostListAPI(APIView):
     def get(self, request):
-        self_id = request.user.id
-        count = Post.objects.all().count()
-        posts = Post.objects.all()
-        posts = paginate_data(request, posts)
-        post_array = []
-        post_data = {}
+        sort_type = request.GET.get('sort_type', 'likeDesc')
+
+        postData = None
+        if sort_type == 'timeAsc':
+            postData = Post.objects.filter(Q(is_announcement=False) & Q(check_status=True)).order_by('create_time')
+        elif sort_type == 'timeDesc':
+            postData = Post.objects.filter(Q(is_announcement=False) & Q(check_status=True)).order_by('-create_time')
+        else:
+            postData = Post.objects.filter(Q(is_announcement=False) & Q(check_status=True)).order_by('-like_count')
 
         for post in posts:
             tmp = {}
@@ -143,9 +147,9 @@ class PostNewAPI(APIView):
             return fail("未登录！")
         post_id = request.POST.get("id")
         user_id = request.user.id
-        post_content = request.data.get("post_content")
-        post_title = request.data.get("post_title", None)
-        tags = request.data.get("tags", None)
+        post_content = request.POST.get("post_content")
+        post_title = request.POST.get("post_title", None)
+        tags = request.POST.get("tags", None)
 
         user = User.objects.get(id=user_id)
 
