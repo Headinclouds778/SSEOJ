@@ -9,6 +9,7 @@ from problem.models import Tag
 
 class PostListAPI(APIView):
     def get(self, request):
+        myself = request.user
         sort_type = request.GET.get('sort_type', 'likeDesc')
 
         postData = None
@@ -34,6 +35,7 @@ class PostListAPI(APIView):
             postRelateData['avatar'] = ImageCode.image_base64(creatUser.avatar)
             postRelateData['like_count'] = post.like_count
             postRelateData['comment_count'] = post.comment_count
+            postRelateData['is_good'] = post.like_users.filter(id=myself.id).exists()
 
             postList.append(postRelateData)
 
