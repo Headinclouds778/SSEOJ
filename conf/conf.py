@@ -6,7 +6,7 @@ import time
 from django.db import transaction, IntegrityError
 
 from utils.shortcuts import rand_str
-from conf.languages import languages
+from languages import languages
 from .models import SysConfigs as SysConfigsModel
 
 
